@@ -1,11 +1,13 @@
+"use strict";
+
 /**
  * AddGameForm component for creating new games
  * Uses React Bootstrap form components with validation
  * Integrates with MobX store for state management
  */
 
-import React, { useState } from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { useState } from "react";
+import { observer } from "mobx-react-lite";
 import {
   Card,
   Form,
@@ -14,8 +16,8 @@ import {
   Row,
   Col,
   InputGroup,
-  ButtonGroup
-} from 'react-bootstrap';
+  ButtonGroup,
+} from "react-bootstrap";
 
 /**
  * @typedef {import('../stores/GameStore.js').GameStore} GameStore
@@ -34,17 +36,13 @@ import {
  * @param {AddGameFormProps} props - Component props
  * @returns {JSX.Element} The rendered AddGameForm component
  */
-export const AddGameForm = observer(({
-  onGameCreated,
-  onCancel,
-  store
-}) => {
+export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
   // Form state - using local state instead of store to avoid affecting global state
   /** @type {[{name: string, description: string, isTimeBased: boolean}, React.Dispatch<React.SetStateAction<{name: string, description: string, isTimeBased: boolean}>>]} */
   const [formData, setFormData] = useState({
-    name: '',
-    description: '',
-    isTimeBased: false
+    name: "",
+    description: "",
+    isTimeBased: false,
   });
 
   // Form validation state
@@ -60,16 +58,16 @@ export const AddGameForm = observer(({
    * @param {string | boolean} value - New value for the field
    */
   const handleFieldChange = (field, value) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
 
     // Clear error for this field when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [field]: ''
+        [field]: "",
       }));
     }
   };
@@ -84,24 +82,24 @@ export const AddGameForm = observer(({
 
     // Validate game name
     if (!formData.name.trim()) {
-      newErrors.name = 'Game name is required';
+      newErrors.name = "Game name is required";
     } else if (formData.name.trim().length < 2) {
-      newErrors.name = 'Game name must be at least 2 characters long';
+      newErrors.name = "Game name must be at least 2 characters long";
     } else if (formData.name.trim().length > 50) {
-      newErrors.name = 'Game name must be less than 50 characters';
+      newErrors.name = "Game name must be less than 50 characters";
     }
 
     // Check if game name already exists
     const existingGame = store.games.find(
-      game => game.name.toLowerCase() === formData.name.trim().toLowerCase()
+      (game) => game.name.toLowerCase() === formData.name.trim().toLowerCase(),
     );
     if (existingGame) {
-      newErrors.name = 'A game with this name already exists';
+      newErrors.name = "A game with this name already exists";
     }
 
     // Validate description (optional but has length limit)
     if (formData.description.trim().length > 200) {
-      newErrors.description = 'Description must be less than 200 characters';
+      newErrors.description = "Description must be less than 200 characters";
     }
 
     return newErrors;
@@ -129,21 +127,21 @@ export const AddGameForm = observer(({
       const gameId = await store.createGame(
         formData.name.trim(),
         formData.description.trim(),
-        formData.isTimeBased
+        formData.isTimeBased,
       );
 
       if (gameId) {
         // Success - reset form and call callback
         setFormData({
-          name: '',
-          description: '',
-          isTimeBased: false
+          name: "",
+          description: "",
+          isTimeBased: false,
         });
         onGameCreated();
       }
     } catch (error) {
       // Error is handled by the store and displayed in the main app
-      console.error('Error creating game:', error);
+      console.error("Error creating game:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -155,9 +153,9 @@ export const AddGameForm = observer(({
   const handleCancel = () => {
     // Reset form state
     setFormData({
-      name: '',
-      description: '',
-      isTimeBased: false
+      name: "",
+      description: "",
+      isTimeBased: false,
     });
     setErrors({});
     onCancel();
@@ -184,7 +182,7 @@ export const AddGameForm = observer(({
                     type="text"
                     placeholder="Enter game name"
                     value={formData.name}
-                    onChange={(e) => handleFieldChange('name', e.target.value)}
+                    onChange={(e) => handleFieldChange("name", e.target.value)}
                     isInvalid={!!errors.name}
                     maxLength={50}
                   />
@@ -204,7 +202,9 @@ export const AddGameForm = observer(({
                     rows={3}
                     placeholder="Enter game description (optional)"
                     value={formData.description}
-                    onChange={(e) => handleFieldChange('description', e.target.value)}
+                    onChange={(e) =>
+                      handleFieldChange("description", e.target.value)
+                    }
                     isInvalid={!!errors.description}
                     maxLength={200}
                   />
@@ -222,25 +222,31 @@ export const AddGameForm = observer(({
                   <div className="mt-2">
                     <ButtonGroup className="w-100">
                       <Button
-                        variant={!formData.isTimeBased ? 'success' : 'outline-success'}
-                        onClick={() => handleFieldChange('isTimeBased', false)}
+                        variant={
+                          !formData.isTimeBased ? "success" : "outline-success"
+                        }
+                        onClick={() => handleFieldChange("isTimeBased", false)}
                         className="text-start"
                       >
                         <div>
                           <strong>Score-Based</strong>
                           <br />
-                          <small>Higher scores are better (e.g., points, kills)</small>
+                          <small>
+                            Higher scores are better (e.g., points, kills)
+                          </small>
                         </div>
                       </Button>
                       <Button
-                        variant={formData.isTimeBased ? 'info' : 'outline-info'}
-                        onClick={() => handleFieldChange('isTimeBased', true)}
+                        variant={formData.isTimeBased ? "info" : "outline-info"}
+                        onClick={() => handleFieldChange("isTimeBased", true)}
                         className="text-start"
                       >
                         <div>
                           <strong>Time-Based</strong>
                           <br />
-                          <small>Lower times are better (e.g., race times, speedruns)</small>
+                          <small>
+                            Lower times are better (e.g., race times, speedruns)
+                          </small>
                         </div>
                       </Button>
                     </ButtonGroup>
@@ -256,13 +262,15 @@ export const AddGameForm = observer(({
                   <p className="mb-0">
                     {formData.isTimeBased ? (
                       <>
-                        <strong>Time-Based Game:</strong> Lower values will be ranked higher.
-                        Perfect for racing games, speedruns, or any competition where faster completion is better.
+                        <strong>Time-Based Game:</strong> Lower values will be
+                        ranked higher. Perfect for racing games, speedruns, or
+                        any competition where faster completion is better.
                       </>
                     ) : (
                       <>
-                        <strong>Score-Based Game:</strong> Higher values will be ranked higher.
-                        Perfect for arcade games, sports, or any competition where accumulating points is the goal.
+                        <strong>Score-Based Game:</strong> Higher values will be
+                        ranked higher. Perfect for arcade games, sports, or any
+                        competition where accumulating points is the goal.
                       </>
                     )}
                   </p>
@@ -288,7 +296,7 @@ export const AddGameForm = observer(({
                         Creating Game...
                       </>
                     ) : (
-                      'Create Game'
+                      "Create Game"
                     )}
                   </Button>
                 </div>

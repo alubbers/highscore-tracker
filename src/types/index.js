@@ -8,7 +8,6 @@
  * @typedef {Object} Player
  * @property {string} id - Unique identifier for the player
  * @property {string} name - Display name of the player
- * @property {Date} createdAt - When the player was created
  */
 
 /**
@@ -31,8 +30,6 @@
  * @property {string} [description] - Optional description of the game
  * @property {boolean} isTimeBased - True if lower scores are better (like racing times)
  * @property {Score[]} scores - Array of all scores for this game
- * @property {Date} createdAt - When the game was created
- * @property {Date} updatedAt - When the game was last updated
  */
 
 /**
@@ -43,11 +40,13 @@
  */
 
 /**
- * Configuration for Google Cloud Storage
+ * Configuration for storage service
  * @typedef {Object} StorageConfig
- * @property {string} bucketName - Name of the storage bucket
- * @property {string} projectId - Google Cloud project ID
- * @property {string} [keyFilename] - Path to service account key file
+ * @property {boolean} useLocalStorage - If true, use local file storage; if false, use Google Cloud Storage
+ * @property {string} bucketName - Name of the storage bucket (for Google Cloud Storage)
+ * @property {string} projectId - Google Cloud project ID (for Google Cloud Storage)
+ * @property {string} [keyFilename] - Path to service account key file (for Google Cloud Storage)
+ * @property {string} [localStoragePath] - Path for local file storage (defaults to './data')
  */
 
 /**
@@ -65,10 +64,10 @@
  * @enum {string}
  */
 export const SortOrder = {
-  BEST_FIRST: 'best_first',
-  WORST_FIRST: 'worst_first',
-  NEWEST_FIRST: 'newest_first',
-  OLDEST_FIRST: 'oldest_first'
+  BEST_FIRST: "best_first",
+  WORST_FIRST: "worst_first",
+  NEWEST_FIRST: "newest_first",
+  OLDEST_FIRST: "oldest_first",
 };
 
 /**

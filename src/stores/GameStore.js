@@ -1,12 +1,14 @@
+"use strict";
+
 /**
  * MobX Store for managing game state and operations
  * This store handles all game-related state management using MobX observables
  * and provides methods for CRUD operations on games and scores
  */
 
-import { makeAutoObservable, runInAction } from 'mobx';
-import { v4 as uuidv4 } from 'uuid';
-import { SortOrder } from '../types/index.js';
+import { makeAutoObservable, runInAction } from "mobx";
+import { v4 as uuidv4 } from "uuid";
+import { SortOrder } from "../types/index.js";
 
 /**
  * @typedef {import('../types/index.js').Game} Game
@@ -14,7 +16,7 @@ import { SortOrder } from '../types/index.js';
  * @typedef {import('../types/index.js').Player} Player
  * @typedef {import('../types/index.js').ScoreFilter} ScoreFilter
  * @typedef {import('../types/index.js').ApiResponse} ApiResponse
- * @typedef {import('../services/StorageService.js').StorageService} StorageService
+ * @typedef {import('../services/MemoryStorageService.js').StorageService} StorageService
  */
 
 export class GameStore {
@@ -58,15 +60,15 @@ export class GameStore {
     /** @type {Player} */
     const player1 = {
       id: uuidv4(),
-      name: 'Alice',
-      createdAt: new Date()
+      name: "Alice",
+      createdAt: new Date(),
     };
 
     /** @type {Player} */
     const player2 = {
       id: uuidv4(),
-      name: 'Bob',
-      createdAt: new Date()
+      name: "Bob",
+      createdAt: new Date(),
     };
 
     this.players = [player1, player2];
@@ -75,8 +77,8 @@ export class GameStore {
     /** @type {Game} */
     const sampleGame = {
       id: uuidv4(),
-      name: 'Racing Game',
-      description: 'Best lap times',
+      name: "Racing Game",
+      description: "Best lap times",
       isTimeBased: true,
       scores: [
         {
@@ -86,7 +88,7 @@ export class GameStore {
           value: 95.5, // 95.5 seconds
           isTime: true,
           achievedAt: new Date(),
-          notes: 'Perfect run!'
+          notes: "Perfect run!",
         },
         {
           id: uuidv4(),
@@ -95,11 +97,9 @@ export class GameStore {
           value: 98.2, // 98.2 seconds
           isTime: true,
           achievedAt: new Date(),
-          notes: 'Good attempt'
-        }
+          notes: "Good attempt",
+        },
       ],
-      createdAt: new Date(),
-      updatedAt: new Date()
     };
 
     this.games = [sampleGame];
@@ -117,7 +117,7 @@ export class GameStore {
 
       const response = await this.storageService.listGames();
       if (!response.success) {
-        this.setError(response.error || 'Failed to load games');
+        this.setError(response.error || "Failed to load games");
         return;
       }
 
@@ -135,7 +135,7 @@ export class GameStore {
         this.games = loadedGames;
       });
     } catch (error) {
-      this.setError(error instanceof Error ? error.message : 'Unknown error');
+      this.setError(error instanceof Error ? error.message : "Unknown error");
     } finally {
       this.setLoading(false);
     }
@@ -160,14 +160,12 @@ export class GameStore {
         description,
         isTimeBased,
         scores: [],
-        createdAt: new Date(),
-        updatedAt: new Date()
       };
 
       // Save to storage
       const response = await this.storageService.saveGame(newGame);
       if (!response.success) {
-        this.setError(response.error || 'Failed to save game');
+        this.setError(response.error || "Failed to save game");
         return null;
       }
 
@@ -178,7 +176,7 @@ export class GameStore {
 
       return newGame.id;
     } catch (error) {
-      this.setError(error instanceof Error ? error.message : 'Unknown error');
+      this.setError(error instanceof Error ? error.message : "Unknown error");
       return null;
     } finally {
       this.setLoading(false);
@@ -199,9 +197,9 @@ export class GameStore {
       this.setLoading(true);
       this.setError(null);
 
-      const game = this.games.find(g => g.id === gameId);
+      const game = this.games.find((g) => g.id === gameId);
       if (!game) {
-        this.setError('Game not found');
+        this.setError("Game not found");
         return false;
       }
 
@@ -213,26 +211,25 @@ export class GameStore {
         value,
         isTime: game.isTimeBased,
         achievedAt: new Date(),
-        notes
+        notes,
       };
 
       // Update game with new score
       const updatedGame = {
         ...game,
         scores: [...game.scores, newScore],
-        updatedAt: new Date()
       };
 
       // Save to storage
       const response = await this.storageService.saveGame(updatedGame);
       if (!response.success) {
-        this.setError(response.error || 'Failed to save score');
+        this.setError(response.error || "Failed to save score");
         return false;
       }
 
       // Update local state
       runInAction(() => {
-        const gameIndex = this.games.findIndex(g => g.id === gameId);
+        const gameIndex = this.games.findIndex((g) => g.id === gameId);
         if (gameIndex !== -1) {
           this.games[gameIndex] = updatedGame;
         }
@@ -240,7 +237,7 @@ export class GameStore {
 
       return true;
     } catch (error) {
-      this.setError(error instanceof Error ? error.message : 'Unknown error');
+      this.setError(error instanceof Error ? error.message : "Unknown error");
       return false;
     } finally {
       this.setLoading(false);
@@ -259,13 +256,13 @@ export class GameStore {
 
       const response = await this.storageService.deleteGame(gameId);
       if (!response.success) {
-        this.setError(response.error || 'Failed to delete game');
+        this.setError(response.error || "Failed to delete game");
         return false;
       }
 
       // Update local state
       runInAction(() => {
-        this.games = this.games.filter(g => g.id !== gameId);
+        this.games = this.games.filter((g) => g.id !== gameId);
         if (this.currentGame?.id === gameId) {
           this.currentGame = null;
         }
@@ -273,7 +270,7 @@ export class GameStore {
 
       return true;
     } catch (error) {
-      this.setError(error instanceof Error ? error.message : 'Unknown error');
+      this.setError(error instanceof Error ? error.message : "Unknown error");
       return false;
     } finally {
       this.setLoading(false);
@@ -285,7 +282,9 @@ export class GameStore {
    * @param {string | null} gameId - ID of the game to select
    */
   setCurrentGame(gameId) {
-    this.currentGame = gameId ? this.games.find(g => g.id === gameId) || null : null;
+    this.currentGame = gameId
+      ? this.games.find((g) => g.id === gameId) || null
+      : null;
   }
 
   /**
@@ -298,7 +297,7 @@ export class GameStore {
     const newPlayer = {
       id: uuidv4(),
       name,
-      createdAt: new Date()
+      createdAt: new Date(),
     };
 
     this.players.push(newPlayer);
@@ -313,7 +312,7 @@ export class GameStore {
    * @returns {Score[]} Array of sorted scores
    */
   getScores(gameId, sortOrder = SortOrder.BEST_FIRST, filter) {
-    const game = this.games.find(g => g.id === gameId);
+    const game = this.games.find((g) => g.id === gameId);
     if (!game) return [];
 
     /** @type {Score[]} */
@@ -322,23 +321,27 @@ export class GameStore {
     // Apply filters
     if (filter) {
       if (filter.playerId) {
-        scores = scores.filter(s => s.playerId === filter.playerId);
+        scores = scores.filter((s) => s.playerId === filter.playerId);
       }
       if (filter.dateFrom) {
-        scores = scores.filter(s => s.achievedAt >= filter.dateFrom);
+        scores = scores.filter((s) => s.achievedAt >= filter.dateFrom);
       }
       if (filter.dateTo) {
-        scores = scores.filter(s => s.achievedAt <= filter.dateTo);
+        scores = scores.filter((s) => s.achievedAt <= filter.dateTo);
       }
     }
 
     // Sort scores
     switch (sortOrder) {
       case SortOrder.BEST_FIRST:
-        scores.sort((a, b) => game.isTimeBased ? a.value - b.value : b.value - a.value);
+        scores.sort((a, b) =>
+          game.isTimeBased ? a.value - b.value : b.value - a.value,
+        );
         break;
       case SortOrder.WORST_FIRST:
-        scores.sort((a, b) => game.isTimeBased ? b.value - a.value : a.value - b.value);
+        scores.sort((a, b) =>
+          game.isTimeBased ? b.value - a.value : a.value - b.value,
+        );
         break;
       case SortOrder.NEWEST_FIRST:
         scores.sort((a, b) => b.achievedAt.getTime() - a.achievedAt.getTime());
@@ -363,10 +366,10 @@ export class GameStore {
    * @returns {Score | null} Best score or null if none found
    */
   getBestScore(gameId, playerId) {
-    const game = this.games.find(g => g.id === gameId);
+    const game = this.games.find((g) => g.id === gameId);
     if (!game) return null;
 
-    const playerScores = game.scores.filter(s => s.playerId === playerId);
+    const playerScores = game.scores.filter((s) => s.playerId === playerId);
     if (playerScores.length === 0) return null;
 
     // For time-based games, lower is better; for score-based, higher is better
@@ -386,14 +389,14 @@ export class GameStore {
    * @returns {Array<{player: Player, bestScore: Score}>} Leaderboard entries
    */
   getLeaderboard(gameId, limit = 10) {
-    const game = this.games.find(g => g.id === gameId);
+    const game = this.games.find((g) => g.id === gameId);
     if (!game) return [];
 
     /** @type {Array<{player: Player, bestScore: Score}>} */
     const leaderboard = [];
 
     // Get best score for each player
-    this.players.forEach(player => {
+    this.players.forEach((player) => {
       const bestScore = this.getBestScore(gameId, player.id);
       if (bestScore) {
         leaderboard.push({ player, bestScore });

@@ -1,11 +1,13 @@
+"use strict";
+
 /**
  * GameDetail component for displaying detailed view of a single game
  * Shows leaderboard, recent scores, and game statistics
  * Uses React Bootstrap components for mobile-friendly layout
  */
 
-import React, { useState } from 'react';
-import { observer } from 'mobx-react-lite';
+import React, { useState } from "react";
+import { observer } from "mobx-react-lite";
 import {
   Card,
   Table,
@@ -15,9 +17,9 @@ import {
   Col,
   ListGroup,
   ButtonGroup,
-  Alert
-} from 'react-bootstrap';
-import { SortOrder } from '../types/index.js';
+  Alert,
+} from "react-bootstrap";
+import { SortOrder } from "../types/index.js";
 
 /**
  * @typedef {import('../types/index.js').Game} Game
@@ -55,7 +57,9 @@ export const GameDetail = observer(({ game, store, onBack }) => {
       // Format as time (assuming seconds)
       const minutes = Math.floor(value / 60);
       const seconds = (value % 60).toFixed(2);
-      return minutes > 0 ? `${minutes}:${seconds.padStart(5, '0')}` : `${seconds}s`;
+      return minutes > 0
+        ? `${minutes}:${seconds.padStart(5, "0")}`
+        : `${seconds}s`;
     } else {
       // Format as regular score with thousands separator
       return value.toLocaleString();
@@ -68,12 +72,16 @@ export const GameDetail = observer(({ game, store, onBack }) => {
    * @returns {string} Rank suffix (st, nd, rd, th)
    */
   const getRankSuffix = (position) => {
-    if (position >= 11 && position <= 13) return 'th';
+    if (position >= 11 && position <= 13) return "th";
     switch (position % 10) {
-      case 1: return 'st';
-      case 2: return 'nd';
-      case 3: return 'rd';
-      default: return 'th';
+      case 1:
+        return "st";
+      case 2:
+        return "nd";
+      case 3:
+        return "rd";
+      default:
+        return "th";
     }
   };
 
@@ -84,10 +92,14 @@ export const GameDetail = observer(({ game, store, onBack }) => {
    */
   const getRankVariant = (rank) => {
     switch (rank) {
-      case 1: return 'warning'; // Gold
-      case 2: return 'secondary'; // Silver
-      case 3: return 'dark'; // Bronze
-      default: return 'outline-secondary';
+      case 1:
+        return "warning"; // Gold
+      case 2:
+        return "secondary"; // Silver
+      case 3:
+        return "dark"; // Bronze
+      default:
+        return "outline-secondary";
     }
   };
 
@@ -100,9 +112,11 @@ export const GameDetail = observer(({ game, store, onBack }) => {
 
   // Calculate statistics
   const totalScores = game.scores.length;
-  const uniquePlayers = new Set(game.scores.map(s => s.playerId)).size;
-  const averageScore = totalScores > 0 ?
-    game.scores.reduce((sum, score) => sum + score.value, 0) / totalScores : 0;
+  const uniquePlayers = new Set(game.scores.map((s) => s.playerId)).size;
+  const averageScore =
+    totalScores > 0
+      ? game.scores.reduce((sum, score) => sum + score.value, 0) / totalScores
+      : 0;
 
   return (
     <div>
@@ -112,8 +126,8 @@ export const GameDetail = observer(({ game, store, onBack }) => {
           ← Back to Games
         </Button>
         <div className="text-end">
-          <Badge bg={game.isTimeBased ? 'info' : 'success'}>
-            {game.isTimeBased ? 'Time-Based' : 'Score-Based'}
+          <Badge bg={game.isTimeBased ? "info" : "success"}>
+            {game.isTimeBased ? "Time-Based" : "Score-Based"}
           </Badge>
         </div>
       </div>
@@ -137,7 +151,9 @@ export const GameDetail = observer(({ game, store, onBack }) => {
               <small className="text-muted">Players</small>
             </Col>
             <Col xs={4}>
-              <div className="h4 mb-0">{formatScore(averageScore, game.isTimeBased)}</div>
+              <div className="h4 mb-0">
+                {formatScore(averageScore, game.isTimeBased)}
+              </div>
               <small className="text-muted">Average</small>
             </Col>
           </Row>
@@ -152,14 +168,18 @@ export const GameDetail = observer(({ game, store, onBack }) => {
           </Card.Header>
           <ListGroup variant="flush">
             {leaderboard.map((entry, index) => (
-              <ListGroup.Item key={entry.player.id} className="d-flex justify-content-between align-items-center">
+              <ListGroup.Item
+                key={entry.player.id}
+                className="d-flex justify-content-between align-items-center"
+              >
                 <div className="d-flex align-items-center">
                   <Badge
                     bg={getRankVariant(index + 1)}
                     className="me-3"
-                    style={{ minWidth: '35px' }}
+                    style={{ minWidth: "35px" }}
                   >
-                    {index + 1}{getRankSuffix(index + 1)}
+                    {index + 1}
+                    {getRankSuffix(index + 1)}
                   </Badge>
                   <div>
                     <div className="fw-bold">{entry.player.name}</div>
@@ -173,7 +193,9 @@ export const GameDetail = observer(({ game, store, onBack }) => {
                     {formatScore(entry.bestScore.value, game.isTimeBased)}
                   </div>
                   {entry.bestScore.notes && (
-                    <small className="text-muted">{entry.bestScore.notes}</small>
+                    <small className="text-muted">
+                      {entry.bestScore.notes}
+                    </small>
                   )}
                 </div>
               </ListGroup.Item>
@@ -188,13 +210,21 @@ export const GameDetail = observer(({ game, store, onBack }) => {
           <h5 className="mb-0">All Scores</h5>
           <ButtonGroup size="sm">
             <Button
-              variant={sortOrder === SortOrder.BEST_FIRST ? 'primary' : 'outline-primary'}
+              variant={
+                sortOrder === SortOrder.BEST_FIRST
+                  ? "primary"
+                  : "outline-primary"
+              }
               onClick={() => setSortOrder(SortOrder.BEST_FIRST)}
             >
               Best First
             </Button>
             <Button
-              variant={sortOrder === SortOrder.NEWEST_FIRST ? 'primary' : 'outline-primary'}
+              variant={
+                sortOrder === SortOrder.NEWEST_FIRST
+                  ? "primary"
+                  : "outline-primary"
+              }
               onClick={() => setSortOrder(SortOrder.NEWEST_FIRST)}
             >
               Newest First
@@ -265,7 +295,9 @@ export const GameDetail = observer(({ game, store, onBack }) => {
                   size="sm"
                   onClick={() => setShowAllScores(!showAllScores)}
                 >
-                  {showAllScores ? 'Show Less' : `Show All ${scores.length} Scores`}
+                  {showAllScores
+                    ? "Show Less"
+                    : `Show All ${scores.length} Scores`}
                 </Button>
               </Card.Footer>
             )}
@@ -279,7 +311,11 @@ export const GameDetail = observer(({ game, store, onBack }) => {
           <small className="text-muted">
             <strong>Created:</strong> {game.createdAt.toLocaleString()}
             {game.updatedAt.getTime() !== game.createdAt.getTime() && (
-              <span> • <strong>Last Updated:</strong> {game.updatedAt.toLocaleString()}</span>
+              <span>
+                {" "}
+                • <strong>Last Updated:</strong>{" "}
+                {game.updatedAt.toLocaleString()}
+              </span>
             )}
             <br />
             <strong>Game ID:</strong> {game.id}

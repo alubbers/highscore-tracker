@@ -1,6 +1,6 @@
 # High Score Tracker
 
-A mobile-first web application for tracking high scores and best times across multiple games and players. Built with React, MobX, React Bootstrap, and Google Cloud Storage.
+A mobile-first web application for tracking high scores and best times across multiple games and players. Built with React, MobX, React Bootstrap, with flexible storage options (local storage or Google Cloud Storage).
 
 ## Features
 
@@ -9,23 +9,23 @@ A mobile-first web application for tracking high scores and best times across mu
 - 👥 **Multi-Player**: Add and manage multiple players
 - 📱 **Mobile-First**: Responsive design optimized for mobile devices
 - 🏅 **Leaderboards**: Automatic ranking and leaderboard generation
-- ☁️ **Cloud Storage**: Data persistence using Google Cloud Storage
+- ☁️ **Flexible Storage**: Local storage for development or Google Cloud Storage for production
 - 🚀 **Cloud Run Ready**: Containerized deployment to Google Cloud Run
 
 ## Tech Stack
 
-- **Frontend**: React 18 with TypeScript
+- **Frontend**: React 18 with JavaScript (converted from TypeScript)
 - **State Management**: MobX with observer pattern
 - **UI Components**: React Bootstrap 5
-- **Storage**: Google Cloud Storage (one JSON file per game)
+- **Storage**: Browser localStorage or Google Cloud Storage (configurable)
 - **Deployment**: Google Cloud Run with Docker
 - **Build Tools**: Create React App with custom configuration
 
 ## Architecture
 
 ### Data Model
-```typescript
-// Each game is stored as a separate JSON file in Google Cloud Storage bucket
+```javascript
+// Each game is stored as a separate JSON file (local file or Google Cloud Storage)
 Game {
   id: string
   name: string
@@ -57,25 +57,23 @@ Score {
 ```
 src/
 ├── components/
-│   ├── GameList.tsx        # Display all games in responsive grid
-│   ├── GameDetail.tsx      # Individual game view with leaderboard
-│   ├── AddGameForm.tsx     # Form for creating new games
-│   └── AddScoreForm.tsx    # Form for adding scores
+│   ├── GameList.js         # Display all games in responsive grid
+│   ├── GameDetail.js       # Individual game view with leaderboard
+│   ├── AddGameForm.js      # Form for creating new games
+│   └── AddScoreForm.js     # Form for adding scores
 ├── stores/
-│   └── GameStore.ts        # MobX store for game state management
+│   └── GameStore.js        # MobX store for game state management
 ├── services/
-│   └── StorageService.ts   # Google Cloud Storage operations
+│   └── StorageService.js   # Storage operations (local or cloud)
 └── types/
-    └── index.ts           # TypeScript type definitions
+    └── index.js           # JSDoc type definitions
 ```
 
 ## Setup Instructions
 
 ### Prerequisites
 - Node.js 18+ and npm
-- Google Cloud Platform account
-- Google Cloud Storage bucket
-- Service account with Storage Admin permissions
+- (Optional) Google Cloud Platform account for cloud storage
 
 ### 1. Clone and Install
 ```bash
@@ -84,9 +82,29 @@ cd highscore-tracker
 npm install
 ```
 
-### 2. Google Cloud Setup
+### 2. Storage Configuration
 
-#### Create Storage Bucket
+The application supports two storage modes:
+
+#### Option A: Local Storage (Default - Good for Development)
+No additional setup required. Data is stored in browser localStorage.
+
+```bash
+# .env.local (optional - these are defaults)
+REACT_APP_USE_LOCAL_STORAGE=true
+REACT_APP_LOCAL_STORAGE_PATH=./data
+```
+
+#### Option B: Google Cloud Storage (Production)
+
+First install the Google Cloud Storage package:
+```bash
+npm install @google-cloud/storage
+```
+
+Then set up Google Cloud resources:
+
+##### Create Storage Bucket
 ```bash
 # Create bucket (replace with your bucket name)
 gsutil mb gs://your-highscore-bucket
@@ -95,7 +113,7 @@ gsutil mb gs://your-highscore-bucket
 gsutil iam ch allUsers:objectViewer gs://your-highscore-bucket
 ```
 
-#### Create Service Account
+##### Create Service Account
 ```bash
 # Create service account
 gcloud iam service-accounts create highscore-tracker \
@@ -111,24 +129,32 @@ gcloud iam service-accounts keys create ./config/gcp-service-account-key.json \
   --iam-account=highscore-tracker@YOUR_PROJECT_ID.iam.gserviceaccount.com
 ```
 
-### 3. Environment Configuration
+##### Environment Configuration for Cloud Storage
 ```bash
-# Copy example environment file
-cp .env.example .env.local
-
-# Edit .env.local with your values
+# .env.local for Google Cloud Storage
+REACT_APP_USE_LOCAL_STORAGE=false
 REACT_APP_GCP_PROJECT_ID=your-project-id
 REACT_APP_STORAGE_BUCKET=your-highscore-bucket
 REACT_APP_GCP_KEY_FILE=./config/gcp-service-account-key.json
 ```
 
-### 4. Development Server
+### 3. Development Server
 ```bash
 # Start development server
 npm start
 
 # App will be available at http://localhost:3000
 ```
+
+### Storage Configuration Options
+
+| Environment Variable | Description | Default |
+|---------------------|-------------|---------|
+| `REACT_APP_USE_LOCAL_STORAGE` | Use local storage (true) or Google Cloud Storage (false) | `true` |
+| `REACT_APP_LOCAL_STORAGE_PATH` | Path for local file storage (Node.js only) | `./data` |
+| `REACT_APP_GCP_PROJECT_ID` | Google Cloud project ID | `your-project-id` |
+| `REACT_APP_STORAGE_BUCKET` | Google Cloud Storage bucket name | `highscore-tracker-dev` |
+| `REACT_APP_GCP_KEY_FILE` | Path to service account key file | (optional) |
 
 ## Deployment to Google Cloud Run
 
@@ -199,23 +225,24 @@ highscore-tracker/
 │   └── index.html              # Mobile-optimized HTML template
 ├── src/
 │   ├── components/
-│   │   ├── GameList.tsx        # Game grid with responsive cards
-│   │   ├── GameDetail.tsx      # Game details with leaderboard
-│   │   ├── AddGameForm.tsx     # New game creation form
-│   │   └── AddScoreForm.tsx    # Score addition form
+│   │   ├── GameList.js         # Game grid with responsive cards
+│   │   ├── GameDetail.js       # Game details with leaderboard
+│   │   ├── AddGameForm.js      # New game creation form
+│   │   └── AddScoreForm.js     # Score addition form
 │   ├── services/
-│   │   └── StorageService.ts   # Google Cloud Storage integration
+│   │   └── StorageService.js   # Storage service (local or cloud)
 │   ├── stores/
-│   │   └── GameStore.ts        # MobX state management
+│   │   └── GameStore.js        # MobX state management
 │   ├── types/
-│   │   └── index.ts           # TypeScript definitions
-│   ├── App.tsx                # Main app component
-│   ├── index.tsx              # React entry point
+│   │   └── index.js           # JSDoc type definitions
+│   ├── App.js                 # Main app component
+│   ├── index.js               # React entry point
 │   └── index.css              # Global styles
 ├── Dockerfile                 # Container configuration
 ├── nginx.conf                 # Nginx web server config
 ├── cloudbuild.yaml           # Google Cloud Build config
 ├── start.sh                  # Container startup script
+├── TYPESCRIPT_TO_JAVASCRIPT_CONVERSION.md # Conversion documentation
 └── package.json              # Dependencies and scripts
 ```
 
@@ -223,25 +250,22 @@ highscore-tracker/
 
 ### Common Issues
 
-#### "Storage bucket not found"
-- Verify bucket name in environment variables
-- Check bucket exists: `gsutil ls gs://your-bucket-name`
-- Verify service account has access
+#### Local Storage Mode
+- **Data not persisting**: Check browser localStorage is enabled
+- **Quota exceeded**: Clear browser storage or use smaller datasets
+- **Cross-origin issues**: Ensure proper CORS configuration
 
-#### "Permission denied" errors
-- Check service account has Storage Admin role
-- Verify key file path is correct
-- Ensure key file is valid JSON
+#### Google Cloud Storage Mode
+- **"Storage bucket not found"**: Verify bucket name in environment variables
+- **"Permission denied"**: Check service account has Storage Admin role
+- **"Module not found @google-cloud/storage"**: Install with `npm install @google-cloud/storage`
+- **Build failures with cloud storage**: Ensure `useLocalStorage: true` for browser builds
 
-#### Build failures
-- Check Node.js version (18+ required)
-- Clear npm cache: `npm cache clean --force`
-- Delete node_modules and reinstall: `rm -rf node_modules && npm install`
-
-#### Deployment issues
-- Check Google Cloud APIs are enabled
-- Verify project ID is correct
-- Check Cloud Run service account permissions
+#### General Issues
+- **Build failures**: Check Node.js version (18+ required)
+- **Clear npm cache**: `npm cache clean --force`
+- **Fresh install**: `rm -rf node_modules && npm install`
+- **Deployment issues**: Check Google Cloud APIs are enabled
 
 ### Debugging
 
@@ -252,6 +276,7 @@ REACT_APP_DEBUG=true npm start
 
 # Check browser console for errors
 # Check network tab for API calls
+# Check localStorage in browser dev tools (Application > Storage)
 ```
 
 

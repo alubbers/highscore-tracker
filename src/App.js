@@ -1,3 +1,5 @@
+"use strict";
+
 /**
  * Main App component for the High Score Tracker
  * This is the root component that sets up the overall layout and routing
@@ -10,7 +12,7 @@ import { Container, Navbar, Nav, Alert } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 import { GameStore } from "./stores/GameStore.js";
-import { StorageService } from "./services/StorageService.js";
+import { MemoryStorageService } from "./services/MemoryStorageService.js";
 import { GameList } from "./components/GameList.js";
 import { GameDetail } from "./components/GameDetail.js";
 import { AddGameForm } from "./components/AddGameForm.js";
@@ -23,13 +25,15 @@ import { AddScoreForm } from "./components/AddScoreForm.js";
 // Initialize storage service with environment variables
 /** @type {StorageConfig} */
 const storageConfig = {
+  useLocalStorage: process.env.REACT_APP_USE_LOCAL_STORAGE === "true" || true, // Default to local storage
   bucketName: process.env.REACT_APP_STORAGE_BUCKET || "highscore-tracker-dev",
   projectId: process.env.REACT_APP_GCP_PROJECT_ID || "your-project-id",
   keyFilename: process.env.REACT_APP_GCP_KEY_FILE, // Path to service account key
+  localStoragePath: process.env.REACT_APP_LOCAL_STORAGE_PATH || "./data",
 };
 
 // Create singleton instances
-const storageService = new StorageService(storageConfig);
+const storageService = new MemoryStorageService(storageConfig);
 const gameStore = new GameStore(storageService);
 
 /**

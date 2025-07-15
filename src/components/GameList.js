@@ -1,11 +1,13 @@
+"use strict";
+
 /**
  * GameList component for displaying all games in a mobile-friendly layout
  * Uses React Bootstrap cards and responsive grid system
  * Shows game information and provides action buttons for each game
  */
 
-import React from 'react';
-import { Row, Col, Card, Button, Badge, ListGroup } from 'react-bootstrap';
+import React from "react";
+import { Row, Col, Card, Button, Badge, ListGroup } from "react-bootstrap";
 
 /**
  * @typedef {import('../types/index.js').Game} Game
@@ -36,7 +38,9 @@ export const GameList = ({ games, onGameSelect, onDeleteGame }) => {
       // Format as time (assuming seconds)
       const minutes = Math.floor(value / 60);
       const seconds = (value % 60).toFixed(2);
-      return minutes > 0 ? `${minutes}:${seconds.padStart(5, '0')}` : `${seconds}s`;
+      return minutes > 0
+        ? `${minutes}:${seconds.padStart(5, "0")}`
+        : `${seconds}s`;
     } else {
       // Format as regular score
       return value.toLocaleString();
@@ -66,7 +70,11 @@ export const GameList = ({ games, onGameSelect, onDeleteGame }) => {
    * @param {string} gameName - Name of game for confirmation
    */
   const handleDeleteGame = (gameId, gameName) => {
-    if (window.confirm(`Are you sure you want to delete "${gameName}"? This action cannot be undone.`)) {
+    if (
+      window.confirm(
+        `Are you sure you want to delete "${gameName}"? This action cannot be undone.`,
+      )
+    ) {
       onDeleteGame(gameId);
     }
   };
@@ -76,7 +84,9 @@ export const GameList = ({ games, onGameSelect, onDeleteGame }) => {
     return (
       <div className="text-center py-5">
         <h3 className="text-muted">No Games Yet</h3>
-        <p className="text-muted">Create your first game to start tracking high scores!</p>
+        <p className="text-muted">
+          Create your first game to start tracking high scores!
+        </p>
         <Button variant="primary" size="lg" href="#add-game">
           Add Your First Game
         </Button>
@@ -97,15 +107,16 @@ export const GameList = ({ games, onGameSelect, onDeleteGame }) => {
         {games.map((game) => {
           const bestScore = getBestScore(game);
           const totalScores = game.scores.length;
-          const uniquePlayers = new Set(game.scores.map(s => s.playerId)).size;
+          const uniquePlayers = new Set(game.scores.map((s) => s.playerId))
+            .size;
 
           return (
             <Col key={game.id} xs={12} md={6} lg={4} className="mb-4">
               <Card className="h-100 shadow-sm">
                 <Card.Header className="d-flex justify-content-between align-items-center">
                   <h5 className="mb-0">{game.name}</h5>
-                  <Badge bg={game.isTimeBased ? 'info' : 'success'}>
-                    {game.isTimeBased ? 'Time-Based' : 'Score-Based'}
+                  <Badge bg={game.isTimeBased ? "info" : "success"}>
+                    {game.isTimeBased ? "Time-Based" : "Score-Based"}
                   </Badge>
                 </Card.Header>
 
@@ -161,15 +172,6 @@ export const GameList = ({ games, onGameSelect, onDeleteGame }) => {
                     </div>
                   </div>
                 </Card.Body>
-
-                <Card.Footer className="text-muted">
-                  <small>
-                    Created: {game.createdAt.toLocaleDateString()}
-                    {game.updatedAt.getTime() !== game.createdAt.getTime() && (
-                      <span> • Updated: {game.updatedAt.toLocaleDateString()}</span>
-                    )}
-                  </small>
-                </Card.Footer>
               </Card>
             </Col>
           );

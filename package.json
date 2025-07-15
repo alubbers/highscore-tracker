@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Simple web app to track high scores or best times in any game",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
