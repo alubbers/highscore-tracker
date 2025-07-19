@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import {
   Card,
+  Container,
   Form,
   Button,
   Alert,
@@ -18,6 +19,7 @@ import {
   InputGroup,
   ButtonGroup,
 } from "react-bootstrap";
+import Header from "./Header.js";
 
 /**
  * @typedef {import('../stores/GameStore.js').GameStore} GameStore
@@ -162,166 +164,180 @@ export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
   };
 
   return (
-    <div>
-      <div className="d-flex justify-content-between align-items-center mb-4">
-        <h2>Add New Game</h2>
-        <Button variant="outline-secondary" onClick={handleCancel}>
-          Cancel
-        </Button>
-      </div>
+    <Container>
+      <Header viewName="addGame" />
+      <div className="App">
+        <div className="d-flex justify-content-between align-items-center mb-4">
+          <h2>Add New Game</h2>
+          <Button variant="outline-secondary" onClick={handleCancel}>
+            Cancel
+          </Button>
+        </div>
 
-      <Row className="justify-content-center">
-        <Col xs={12} md={8} lg={6}>
-          <Card>
-            <Card.Body>
-              <Form onSubmit={handleSubmit}>
-                {/* Game Name Field */}
-                <Form.Group className="mb-3">
-                  <Form.Label>Game Name *</Form.Label>
-                  <Form.Control
-                    type="text"
-                    placeholder="Enter game name"
-                    value={formData.name}
-                    onChange={(e) => handleFieldChange("name", e.target.value)}
-                    isInvalid={!!errors.name}
-                    maxLength={50}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.name}
-                  </Form.Control.Feedback>
-                  <Form.Text className="text-muted">
-                    Choose a unique name for your game (2-50 characters)
-                  </Form.Text>
-                </Form.Group>
+        <Row className="justify-content-center">
+          <Col xs={12} md={8} lg={6}>
+            <Card>
+              <Card.Body>
+                <Form onSubmit={handleSubmit}>
+                  {/* Game Name Field */}
+                  <Form.Group className="mb-3">
+                    <Form.Label>Game Name *</Form.Label>
+                    <Form.Control
+                      type="text"
+                      placeholder="Enter game name"
+                      value={formData.name}
+                      onChange={(e) =>
+                        handleFieldChange("name", e.target.value)
+                      }
+                      isInvalid={!!errors.name}
+                      maxLength={50}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.name}
+                    </Form.Control.Feedback>
+                    <Form.Text className="text-muted">
+                      Choose a unique name for your game (2-50 characters)
+                    </Form.Text>
+                  </Form.Group>
 
-                {/* Game Description Field */}
-                <Form.Group className="mb-3">
-                  <Form.Label>Description</Form.Label>
-                  <Form.Control
-                    as="textarea"
-                    rows={3}
-                    placeholder="Enter game description (optional)"
-                    value={formData.description}
-                    onChange={(e) =>
-                      handleFieldChange("description", e.target.value)
-                    }
-                    isInvalid={!!errors.description}
-                    maxLength={200}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.description}
-                  </Form.Control.Feedback>
-                  <Form.Text className="text-muted">
-                    Optional description of the game (max 200 characters)
-                  </Form.Text>
-                </Form.Group>
+                  {/* Game Description Field */}
+                  <Form.Group className="mb-3">
+                    <Form.Label>Description</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      rows={3}
+                      placeholder="Enter game description (optional)"
+                      value={formData.description}
+                      onChange={(e) =>
+                        handleFieldChange("description", e.target.value)
+                      }
+                      isInvalid={!!errors.description}
+                      maxLength={200}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.description}
+                    </Form.Control.Feedback>
+                    <Form.Text className="text-muted">
+                      Optional description of the game (max 200 characters)
+                    </Form.Text>
+                  </Form.Group>
 
-                {/* Game Type Selection */}
-                <Form.Group className="mb-4">
-                  <Form.Label>Game Type</Form.Label>
-                  <div className="mt-2">
-                    <ButtonGroup className="w-100">
-                      <Button
-                        variant={
-                          !formData.isTimeBased ? "success" : "outline-success"
-                        }
-                        onClick={() => handleFieldChange("isTimeBased", false)}
-                        className="text-start"
-                      >
-                        <div>
-                          <strong>Score-Based</strong>
-                          <br />
-                          <small>
-                            Higher scores are better (e.g., points, kills)
-                          </small>
-                        </div>
-                      </Button>
-                      <Button
-                        variant={formData.isTimeBased ? "info" : "outline-info"}
-                        onClick={() => handleFieldChange("isTimeBased", true)}
-                        className="text-start"
-                      >
-                        <div>
-                          <strong>Time-Based</strong>
-                          <br />
-                          <small>
-                            Lower times are better (e.g., race times, speedruns)
-                          </small>
-                        </div>
-                      </Button>
-                    </ButtonGroup>
+                  {/* Game Type Selection */}
+                  <Form.Group className="mb-4">
+                    <Form.Label>Game Type</Form.Label>
+                    <div className="mt-2">
+                      <ButtonGroup className="w-100">
+                        <Button
+                          variant={
+                            !formData.isTimeBased
+                              ? "success"
+                              : "outline-success"
+                          }
+                          onClick={() =>
+                            handleFieldChange("isTimeBased", false)
+                          }
+                          className="text-start"
+                        >
+                          <div>
+                            <strong>Score-Based</strong>
+                            <br />
+                            <small>
+                              Higher scores are better (e.g., points, kills)
+                            </small>
+                          </div>
+                        </Button>
+                        <Button
+                          variant={
+                            formData.isTimeBased ? "info" : "outline-info"
+                          }
+                          onClick={() => handleFieldChange("isTimeBased", true)}
+                          className="text-start"
+                        >
+                          <div>
+                            <strong>Time-Based</strong>
+                            <br />
+                            <small>
+                              Lower times are better (e.g., race times,
+                              speedruns)
+                            </small>
+                          </div>
+                        </Button>
+                      </ButtonGroup>
+                    </div>
+                    <Form.Text className="text-muted">
+                      Choose how scores should be ranked in this game
+                    </Form.Text>
+                  </Form.Group>
+
+                  {/* Information Alert */}
+                  <Alert variant="info" className="mb-4">
+                    <Alert.Heading>Game Settings</Alert.Heading>
+                    <p className="mb-0">
+                      {formData.isTimeBased ? (
+                        <>
+                          <strong>Time-Based Game:</strong> Lower values will be
+                          ranked higher. Perfect for racing games, speedruns, or
+                          any competition where faster completion is better.
+                        </>
+                      ) : (
+                        <>
+                          <strong>Score-Based Game:</strong> Higher values will
+                          be ranked higher. Perfect for arcade games, sports, or
+                          any competition where accumulating points is the goal.
+                        </>
+                      )}
+                    </p>
+                  </Alert>
+
+                  {/* Submit Buttons */}
+                  <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <Button
+                      variant="outline-secondary"
+                      onClick={handleCancel}
+                      disabled={isSubmitting}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      type="submit"
+                      disabled={isSubmitting || !formData.name.trim()}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" />
+                          Creating Game...
+                        </>
+                      ) : (
+                        "Create Game"
+                      )}
+                    </Button>
                   </div>
-                  <Form.Text className="text-muted">
-                    Choose how scores should be ranked in this game
-                  </Form.Text>
-                </Form.Group>
+                </Form>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
 
-                {/* Information Alert */}
-                <Alert variant="info" className="mb-4">
-                  <Alert.Heading>Game Settings</Alert.Heading>
-                  <p className="mb-0">
-                    {formData.isTimeBased ? (
-                      <>
-                        <strong>Time-Based Game:</strong> Lower values will be
-                        ranked higher. Perfect for racing games, speedruns, or
-                        any competition where faster completion is better.
-                      </>
-                    ) : (
-                      <>
-                        <strong>Score-Based Game:</strong> Higher values will be
-                        ranked higher. Perfect for arcade games, sports, or any
-                        competition where accumulating points is the goal.
-                      </>
-                    )}
-                  </p>
-                </Alert>
-
-                {/* Submit Buttons */}
-                <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                  <Button
-                    variant="outline-secondary"
-                    onClick={handleCancel}
-                    disabled={isSubmitting}
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="primary"
-                    type="submit"
-                    disabled={isSubmitting || !formData.name.trim()}
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <span className="spinner-border spinner-border-sm me-2" />
-                        Creating Game...
-                      </>
-                    ) : (
-                      "Create Game"
-                    )}
-                  </Button>
-                </div>
-              </Form>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-
-      {/* Form Help */}
-      <Row className="justify-content-center mt-4">
-        <Col xs={12} md={8} lg={6}>
-          <Card bg="light">
-            <Card.Body>
-              <h6>Tips for Creating Games:</h6>
-              <ul className="mb-0">
-                <li>Use descriptive names that clearly identify the game</li>
-                <li>Add a description to help players understand the game</li>
-                <li>Choose the correct game type for proper score ranking</li>
-                <li>You can add players and scores after creating the game</li>
-              </ul>
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </div>
+        {/* Form Help */}
+        <Row className="justify-content-center mt-4">
+          <Col xs={12} md={8} lg={6}>
+            <Card bg="light">
+              <Card.Body>
+                <h6>Tips for Creating Games:</h6>
+                <ul className="mb-0">
+                  <li>Use descriptive names that clearly identify the game</li>
+                  <li>Add a description to help players understand the game</li>
+                  <li>Choose the correct game type for proper score ranking</li>
+                  <li>
+                    You can add players and scores after creating the game
+                  </li>
+                </ul>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </Container>
   );
 });

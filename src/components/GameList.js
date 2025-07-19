@@ -87,7 +87,7 @@ export const GameList = ({ games, onGameSelect, onDeleteGame }) => {
         <p className="text-muted">
           Create your first game to start tracking high scores!
         </p>
-        <Button variant="primary" size="lg" href="#add-game">
+        <Button variant="primary" size="lg" href="/addGame">
           Add Your First Game
         </Button>
       </div>
@@ -98,7 +98,7 @@ export const GameList = ({ games, onGameSelect, onDeleteGame }) => {
     <div>
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2>Games ({games.length})</h2>
-        <Button variant="success" href="#add-game">
+        <Button variant="success" href="/addGame">
           Add New Game
         </Button>
       </div>

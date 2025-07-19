@@ -10,6 +10,7 @@ import React, { useState } from "react";
 import { observer } from "mobx-react-lite";
 import {
   Card,
+  Container,
   Form,
   Button,
   Alert,
@@ -18,6 +19,7 @@ import {
   InputGroup,
   Badge,
 } from "react-bootstrap";
+import Header from "./Header.js";
 
 /**
  * @typedef {import('../types/index.js').Game} Game
@@ -281,239 +283,253 @@ export const AddScoreForm = observer(
     }
 
     return (
-      <div>
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2>Add New Score</h2>
-          <Button variant="outline-secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
-        </div>
+      <Container>
+        <Header viewName="addScore" />
+        <div className="App">
+          <div>
+            <div className="d-flex justify-content-between align-items-center mb-4">
+              <h2>Add New Score</h2>
+              <Button variant="outline-secondary" onClick={handleCancel}>
+                Cancel
+              </Button>
+            </div>
 
-        <Row className="justify-content-center">
-          <Col xs={12} md={8} lg={6}>
-            <Card>
-              <Card.Body>
-                <Form onSubmit={handleSubmit}>
-                  {/* Game Selection */}
-                  <Form.Group className="mb-3">
-                    <Form.Label>Select Game *</Form.Label>
-                    <Form.Select
-                      value={formData.gameId}
-                      onChange={(e) =>
-                        handleFieldChange("gameId", e.target.value)
-                      }
-                      isInvalid={!!errors.gameId}
-                    >
-                      <option value="">Choose a game...</option>
-                      {games.map((game) => (
-                        <option key={game.id} value={game.id}>
-                          {game.name}{" "}
-                          {game.isTimeBased ? "(Time-Based)" : "(Score-Based)"}
-                        </option>
-                      ))}
-                    </Form.Select>
-                    <Form.Control.Feedback type="invalid">
-                      {errors.gameId}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  {/* Selected Game Info */}
-                  {selectedGame && (
-                    <Alert variant="info" className="mb-3">
-                      <div className="d-flex justify-content-between align-items-center">
-                        <div>
-                          <strong>{selectedGame.name}</strong>
-                          {selectedGame.description && (
-                            <div className="small">
-                              {selectedGame.description}
-                            </div>
-                          )}
-                        </div>
-                        <Badge
-                          bg={selectedGame.isTimeBased ? "info" : "success"}
+            <Row className="justify-content-center">
+              <Col xs={12} md={8} lg={6}>
+                <Card>
+                  <Card.Body>
+                    <Form onSubmit={handleSubmit}>
+                      {/* Game Selection */}
+                      <Form.Group className="mb-3">
+                        <Form.Label>Select Game *</Form.Label>
+                        <Form.Select
+                          value={formData.gameId}
+                          onChange={(e) =>
+                            handleFieldChange("gameId", e.target.value)
+                          }
+                          isInvalid={!!errors.gameId}
                         >
-                          {selectedGame.isTimeBased
-                            ? "Time-Based"
-                            : "Score-Based"}
-                        </Badge>
-                      </div>
-                    </Alert>
-                  )}
+                          <option value="">Choose a game...</option>
+                          {games.map((game) => (
+                            <option key={game.id} value={game.id}>
+                              {game.name}{" "}
+                              {game.isTimeBased
+                                ? "(Time-Based)"
+                                : "(Score-Based)"}
+                            </option>
+                          ))}
+                        </Form.Select>
+                        <Form.Control.Feedback type="invalid">
+                          {errors.gameId}
+                        </Form.Control.Feedback>
+                      </Form.Group>
 
-                  {/* Player Selection */}
-                  <Form.Group className="mb-3">
-                    <div className="d-flex justify-content-between align-items-center mb-2">
-                      <Form.Label>Player *</Form.Label>
-                      <Form.Check
-                        type="switch"
-                        id="new-player-switch"
-                        label="New Player"
-                        checked={formData.isNewPlayer}
-                        onChange={handleNewPlayerToggle}
-                      />
-                    </div>
-
-                    {formData.isNewPlayer ? (
-                      <Form.Control
-                        type="text"
-                        placeholder="Enter new player name"
-                        value={formData.playerName}
-                        onChange={(e) =>
-                          handleFieldChange("playerName", e.target.value)
-                        }
-                        isInvalid={!!errors.playerName}
-                        maxLength={30}
-                      />
-                    ) : (
-                      <Form.Select
-                        value={formData.playerId}
-                        onChange={(e) =>
-                          handleFieldChange("playerId", e.target.value)
-                        }
-                        isInvalid={!!errors.playerId}
-                      >
-                        <option value="">Choose a player...</option>
-                        {players.map((player) => (
-                          <option key={player.id} value={player.id}>
-                            {player.name}
-                          </option>
-                        ))}
-                      </Form.Select>
-                    )}
-
-                    <Form.Control.Feedback type="invalid">
-                      {errors.playerName || errors.playerId}
-                    </Form.Control.Feedback>
-                  </Form.Group>
-
-                  {/* Score Value */}
-                  <Form.Group className="mb-3">
-                    <Form.Label>
-                      Score Value *
+                      {/* Selected Game Info */}
                       {selectedGame && (
-                        <span className="text-muted">
-                          {selectedGame.isTimeBased
-                            ? " (in seconds)"
-                            : " (points)"}
-                        </span>
+                        <Alert variant="info" className="mb-3">
+                          <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                              <strong>{selectedGame.name}</strong>
+                              {selectedGame.description && (
+                                <div className="small">
+                                  {selectedGame.description}
+                                </div>
+                              )}
+                            </div>
+                            <Badge
+                              bg={selectedGame.isTimeBased ? "info" : "success"}
+                            >
+                              {selectedGame.isTimeBased
+                                ? "Time-Based"
+                                : "Score-Based"}
+                            </Badge>
+                          </div>
+                        </Alert>
                       )}
-                    </Form.Label>
-                    <InputGroup>
-                      <Form.Control
-                        type="number"
-                        step="0.01"
-                        min="0"
-                        placeholder={
-                          selectedGame?.isTimeBased
-                            ? "Enter time in seconds"
-                            : "Enter score"
-                        }
-                        value={formData.scoreValue}
-                        onChange={(e) =>
-                          handleFieldChange("scoreValue", e.target.value)
-                        }
-                        isInvalid={!!errors.scoreValue}
-                      />
-                      {formData.scoreValue && selectedGame && (
-                        <InputGroup.Text>
-                          {formatScorePreview(
-                            formData.scoreValue,
-                            selectedGame.isTimeBased,
+
+                      {/* Player Selection */}
+                      <Form.Group className="mb-3">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                          <Form.Label>Player *</Form.Label>
+                          <Form.Check
+                            type="switch"
+                            id="new-player-switch"
+                            label="New Player"
+                            checked={formData.isNewPlayer}
+                            onChange={handleNewPlayerToggle}
+                          />
+                        </div>
+
+                        {formData.isNewPlayer ? (
+                          <Form.Control
+                            type="text"
+                            placeholder="Enter new player name"
+                            value={formData.playerName}
+                            onChange={(e) =>
+                              handleFieldChange("playerName", e.target.value)
+                            }
+                            isInvalid={!!errors.playerName}
+                            maxLength={30}
+                          />
+                        ) : (
+                          <Form.Select
+                            value={formData.playerId}
+                            onChange={(e) =>
+                              handleFieldChange("playerId", e.target.value)
+                            }
+                            isInvalid={!!errors.playerId}
+                          >
+                            <option value="">Choose a player...</option>
+                            {players.map((player) => (
+                              <option key={player.id} value={player.id}>
+                                {player.name}
+                              </option>
+                            ))}
+                          </Form.Select>
+                        )}
+
+                        <Form.Control.Feedback type="invalid">
+                          {errors.playerName || errors.playerId}
+                        </Form.Control.Feedback>
+                      </Form.Group>
+
+                      {/* Score Value */}
+                      <Form.Group className="mb-3">
+                        <Form.Label>
+                          Score Value *
+                          {selectedGame && (
+                            <span className="text-muted">
+                              {selectedGame.isTimeBased
+                                ? " (in seconds)"
+                                : " (points)"}
+                            </span>
                           )}
-                        </InputGroup.Text>
-                      )}
-                    </InputGroup>
-                    <Form.Control.Feedback type="invalid">
-                      {errors.scoreValue}
-                    </Form.Control.Feedback>
-                    {selectedGame && (
-                      <Form.Text className="text-muted">
-                        {selectedGame.isTimeBased
-                          ? "Enter the time in seconds (e.g., 95.5 for 1:35.50)"
-                          : "Enter the score value (e.g., 1000, 15.5)"}
-                      </Form.Text>
-                    )}
-                  </Form.Group>
+                        </Form.Label>
+                        <InputGroup>
+                          <Form.Control
+                            type="number"
+                            step="0.01"
+                            min="0"
+                            placeholder={
+                              selectedGame?.isTimeBased
+                                ? "Enter time in seconds"
+                                : "Enter score"
+                            }
+                            value={formData.scoreValue}
+                            onChange={(e) =>
+                              handleFieldChange("scoreValue", e.target.value)
+                            }
+                            isInvalid={!!errors.scoreValue}
+                          />
+                          {formData.scoreValue && selectedGame && (
+                            <InputGroup.Text>
+                              {formatScorePreview(
+                                formData.scoreValue,
+                                selectedGame.isTimeBased,
+                              )}
+                            </InputGroup.Text>
+                          )}
+                        </InputGroup>
+                        <Form.Control.Feedback type="invalid">
+                          {errors.scoreValue}
+                        </Form.Control.Feedback>
+                        {selectedGame && (
+                          <Form.Text className="text-muted">
+                            {selectedGame.isTimeBased
+                              ? "Enter the time in seconds (e.g., 95.5 for 1:35.50)"
+                              : "Enter the score value (e.g., 1000, 15.5)"}
+                          </Form.Text>
+                        )}
+                      </Form.Group>
 
-                  {/* Notes */}
-                  <Form.Group className="mb-4">
-                    <Form.Label>Notes (Optional)</Form.Label>
-                    <Form.Control
-                      as="textarea"
-                      rows={2}
-                      placeholder="Add any notes about this score..."
-                      value={formData.notes}
-                      onChange={(e) =>
-                        handleFieldChange("notes", e.target.value)
-                      }
-                      isInvalid={!!errors.notes}
-                      maxLength={100}
-                    />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.notes}
-                    </Form.Control.Feedback>
-                    <Form.Text className="text-muted">
-                      Optional notes about this score (max 100 characters)
-                    </Form.Text>
-                  </Form.Group>
+                      {/* Notes */}
+                      <Form.Group className="mb-4">
+                        <Form.Label>Notes (Optional)</Form.Label>
+                        <Form.Control
+                          as="textarea"
+                          rows={2}
+                          placeholder="Add any notes about this score..."
+                          value={formData.notes}
+                          onChange={(e) =>
+                            handleFieldChange("notes", e.target.value)
+                          }
+                          isInvalid={!!errors.notes}
+                          maxLength={100}
+                        />
+                        <Form.Control.Feedback type="invalid">
+                          {errors.notes}
+                        </Form.Control.Feedback>
+                        <Form.Text className="text-muted">
+                          Optional notes about this score (max 100 characters)
+                        </Form.Text>
+                      </Form.Group>
 
-                  {/* Submit Buttons */}
-                  <div className="d-grid gap-2 d-md-flex justify-content-md-end">
-                    <Button
-                      variant="outline-secondary"
-                      onClick={handleCancel}
-                      disabled={isSubmitting}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      disabled={
-                        isSubmitting || !formData.gameId || !formData.scoreValue
-                      }
-                    >
-                      {isSubmitting ? (
-                        <>
-                          <span className="spinner-border spinner-border-sm me-2" />
-                          Adding Score...
-                        </>
-                      ) : (
-                        "Add Score"
-                      )}
-                    </Button>
-                  </div>
-                </Form>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+                      {/* Submit Buttons */}
+                      <div className="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <Button
+                          variant="outline-secondary"
+                          onClick={handleCancel}
+                          disabled={isSubmitting}
+                        >
+                          Cancel
+                        </Button>
+                        <Button
+                          variant="primary"
+                          type="submit"
+                          disabled={
+                            isSubmitting ||
+                            !formData.gameId ||
+                            !formData.scoreValue
+                          }
+                        >
+                          {isSubmitting ? (
+                            <>
+                              <span className="spinner-border spinner-border-sm me-2" />
+                              Adding Score...
+                            </>
+                          ) : (
+                            "Add Score"
+                          )}
+                        </Button>
+                      </div>
+                    </Form>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
 
-        {/* Form Help */}
-        <Row className="justify-content-center mt-4">
-          <Col xs={12} md={8} lg={6}>
-            <Card bg="light">
-              <Card.Body>
-                <h6>Tips for Adding Scores:</h6>
-                <ul className="mb-0">
-                  <li>Select the correct game first to see the score format</li>
-                  <li>
-                    For time-based games, enter times in seconds (e.g., 95.5 for
-                    1:35.50)
-                  </li>
-                  <li>
-                    Create new players on the fly or select from existing ones
-                  </li>
-                  <li>
-                    Add notes to remember special achievements or conditions
-                  </li>
-                  <li>Check the preview to ensure your score looks correct</li>
-                </ul>
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
-      </div>
+            {/* Form Help */}
+            <Row className="justify-content-center mt-4">
+              <Col xs={12} md={8} lg={6}>
+                <Card bg="light">
+                  <Card.Body>
+                    <h6>Tips for Adding Scores:</h6>
+                    <ul className="mb-0">
+                      <li>
+                        Select the correct game first to see the score format
+                      </li>
+                      <li>
+                        For time-based games, enter times in seconds (e.g., 95.5
+                        for 1:35.50)
+                      </li>
+                      <li>
+                        Create new players on the fly or select from existing
+                        ones
+                      </li>
+                      <li>
+                        Add notes to remember special achievements or conditions
+                      </li>
+                      <li>
+                        Check the preview to ensure your score looks correct
+                      </li>
+                    </ul>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+          </div>
+        </div>
+      </Container>
     );
   },
 );
