@@ -33,6 +33,7 @@ export class MemoryStorageService {
     if (this.storage.empty) {
       this.storage.empty = false;
     }
+    console.log(`RATOUT 1: in saveGame, game: ${JSON.stringify(game)}`);
     this.storage[game.id] = game;
   }
 
@@ -62,11 +63,16 @@ export class MemoryStorageService {
     return new Promise((resolve, reject) => {
       const gameList = [];
       if (!this.storage.empty) {
-        this.storage.forEach((game, gameId) => {
-          gameList.push({
-            id: gameId,
-            name: game.name,
-          });
+        this.storage.forEach((game) => {
+          console.log(
+            `RATOUT 0: in listGames, checking this to see if it's a game: ${JSON.stringify(game)}`,
+          );
+          if (game.id) {
+            gameList.push({
+              id: game.id,
+              name: game.name,
+            });
+          }
         });
       }
       resolve({ success: true, data: gameList });

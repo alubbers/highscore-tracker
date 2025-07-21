@@ -28,7 +28,6 @@ import Header from "./Header.js";
 /**
  * @typedef {Object} AddGameFormProps
  * @property {() => void} onGameCreated - Callback when game is successfully created
- * @property {() => void} onCancel - Callback when form is cancelled
  * @property {GameStore} store - The game store instance
  */
 
@@ -139,7 +138,6 @@ export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
           description: "",
           isTimeBased: false,
         });
-        onGameCreated();
       }
     } catch (error) {
       // Error is handled by the store and displayed in the main app
@@ -149,29 +147,12 @@ export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
     }
   };
 
-  /**
-   * Handle cancel button click
-   */
-  const handleCancel = () => {
-    // Reset form state
-    setFormData({
-      name: "",
-      description: "",
-      isTimeBased: false,
-    });
-    setErrors({});
-    onCancel();
-  };
-
   return (
     <Container>
       <Header viewName="addGame" />
       <div className="App">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Add New Game</h2>
-          <Button variant="outline-secondary" onClick={handleCancel}>
-            Cancel
-          </Button>
         </div>
 
         <Row className="justify-content-center">
@@ -293,7 +274,7 @@ export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
                   <div className="d-grid gap-2 d-md-flex justify-content-md-end">
                     <Button
                       variant="outline-secondary"
-                      onClick={handleCancel}
+                      href="/"
                       disabled={isSubmitting}
                     >
                       Cancel
