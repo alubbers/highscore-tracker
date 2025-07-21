@@ -35,6 +35,8 @@ export class MemoryStorageService {
     }
     console.log(`RATOUT 1: in saveGame, game: ${JSON.stringify(game)}`);
     this.storage[game.id] = game;
+
+    return Promise.resolve({ success: true, data: true });
   }
 
   /**
@@ -43,7 +45,7 @@ export class MemoryStorageService {
    * @returns {Promise<ApiResponse<Game>>} Promise with the game data or error
    */
   async loadGame(gameId) {
-    return this.storage[gameId];
+    return Promise.resolve({ success: true, data: this.storage[gameId] });
   }
 
   /**
@@ -53,6 +55,8 @@ export class MemoryStorageService {
    */
   async deleteGame(gameId) {
     delete this.storage[gameId];
+
+    return Promise.resolve({ success: true, data: true });
   }
 
   /**
@@ -84,83 +88,7 @@ export class MemoryStorageService {
    * @returns {Promise<ApiResponse<boolean>>} Promise with connection status
    */
   async testConnection() {
-    if (this.useLocalStorage) {
-      return this.testLocalConnection();
-    } else {
-      return this.testCloudConnection();
-    }
-  }
-
-  /**
-   * Test local storage connection
-   * @returns {Promise<ApiResponse<boolean>>} Promise with connection status
-   */
-  async testLocalConnection() {
-    try {
-      if (this.isBrowser) {
-        const testKey = "highscore-tracker-test";
-        localStorage.setItem(testKey, "test");
-        localStorage.removeItem(testKey);
-        return { success: true, data: true };
-      } else {
-        // In Node.js environment, you would implement file system test here
-        console.warn("File system test not implemented in this version");
-        return {
-          success: false,
-          error: "File system operations require server-side implementation",
-        };
-      }
-    } catch (error) {
-      console.error("Error testing local storage connection:", error);
-      return {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Local storage connection failed",
-      };
-    }
-  }
-
-  /**
-   * Test Google Cloud Storage connection
-   * @returns {Promise<ApiResponse<boolean>>} Promise with connection status
-   */
-  async testCloudConnection() {
-    if (this.isBrowser) {
-      return {
-        success: false,
-        error: "Google Cloud Storage cannot be used directly in browser",
-      };
-    }
-
-    if (!this.storage || !this.bucket) {
-      return {
-        success: false,
-        error: "Google Cloud Storage not initialized",
-      };
-    }
-
-    try {
-      const [exists] = await this.bucket.exists();
-      if (!exists) {
-        return { success: false, error: "Storage bucket does not exist" };
-      }
-
-      // Try to list files to ensure we have proper permissions
-      await this.bucket.getFiles({ maxResults: 1 });
-
-      return { success: true, data: true };
-    } catch (error) {
-      console.error("Error testing cloud storage connection:", error);
-      return {
-        success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Cloud storage connection failed",
-      };
-    }
+    return Promise.resolve({ success: true, data: true });
   }
 
   /**

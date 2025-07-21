@@ -20,6 +20,7 @@ import {
   Badge,
 } from "react-bootstrap";
 import Header from "./Header.js";
+import SuccessToast from "./SuccessToast.js";
 
 /**
  * @typedef {import('../types/index.js').Game} Game
@@ -61,6 +62,13 @@ export const AddScoreForm = observer(
 
     /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
     const [isSubmitting, setIsSubmitting] = useState(false);
+
+    // Toast notification state
+    /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+    const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+    /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
+    const [successMessage, setSuccessMessage] = useState("");
 
     // Get selected game
     const selectedGame = games.find((g) => g.id === formData.gameId);
@@ -231,7 +239,15 @@ export const AddScoreForm = observer(
         );
 
         if (success) {
-          // Success - reset form and call callback
+          // Success - capture success info before reset, then reset form and show success toast
+          const gameName = selectedGame?.name || "Unknown Game";
+          const displayValue = selectedGame?.isTimeBased
+            ? `${formData.scoreValue}s`
+            : formData.scoreValue;
+          setSuccessMessage(
+            `Score of ${displayValue} added to "${gameName}" for ${playerName}!`,
+          );
+
           setFormData({
             gameId: "",
             playerId: "",
@@ -240,6 +256,7 @@ export const AddScoreForm = observer(
             scoreValue: "",
             notes: "",
           });
+          setShowSuccessToast(true);
           onScoreAdded();
         }
       } catch (error) {
@@ -529,6 +546,14 @@ export const AddScoreForm = observer(
             </Row>
           </div>
         </div>
+
+        {/* Success Toast Notification */}
+        <SuccessToast
+          show={showSuccessToast}
+          onClose={() => setShowSuccessToast(false)}
+          title="Score Added!"
+          message={successMessage}
+        />
       </Container>
     );
   },

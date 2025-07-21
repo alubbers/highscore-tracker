@@ -20,6 +20,7 @@ import {
   ButtonGroup,
 } from "react-bootstrap";
 import Header from "./Header.js";
+import SuccessToast from "./SuccessToast.js";
 
 /**
  * @typedef {import('../stores/GameStore.js').GameStore} GameStore
@@ -27,7 +28,6 @@ import Header from "./Header.js";
 
 /**
  * @typedef {Object} AddGameFormProps
- * @property {() => void} onGameCreated - Callback when game is successfully created
  * @property {GameStore} store - The game store instance
  */
 
@@ -37,7 +37,7 @@ import Header from "./Header.js";
  * @param {AddGameFormProps} props - Component props
  * @returns {JSX.Element} The rendered AddGameForm component
  */
-export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
+export const AddGameForm = observer(({ store }) => {
   // Form state - using local state instead of store to avoid affecting global state
   /** @type {[{name: string, description: string, isTimeBased: boolean}, React.Dispatch<React.SetStateAction<{name: string, description: string, isTimeBased: boolean}>>]} */
   const [formData, setFormData] = useState({
@@ -52,6 +52,13 @@ export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
 
   /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Toast notification state
+  /** @type {[boolean, React.Dispatch<React.SetStateAction<boolean>>]} */
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+
+  /** @type {[string, React.Dispatch<React.SetStateAction<string>>]} */
+  const [createdGameName, setCreatedGameName] = useState("");
 
   /**
    * Handle form field changes
@@ -132,12 +139,14 @@ export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
       );
 
       if (gameId) {
-        // Success - reset form and call callback
+        // Success - capture game name before reset, then reset form and show success toast
+        setCreatedGameName(formData.name.trim());
         setFormData({
           name: "",
           description: "",
           isTimeBased: false,
         });
+        setShowSuccessToast(true);
       }
     } catch (error) {
       // Error is handled by the store and displayed in the main app
@@ -318,6 +327,14 @@ export const AddGameForm = observer(({ onGameCreated, onCancel, store }) => {
             </Card>
           </Col>
         </Row>
+
+        {/* Success Toast Notification */}
+        <SuccessToast
+          show={showSuccessToast}
+          onClose={() => setShowSuccessToast(false)}
+          title="Game Created!"
+          message={`"${createdGameName}" has been successfully created. You can now add scores to it.`}
+        />
       </div>
     </Container>
   );
