@@ -43,6 +43,22 @@ export default (props) => {
             </Nav.Item>
           </Nav>
         </Navbar.Collapse>
+        {/* Error Alert */}
+        {props.hasError && (
+          <Alert variant="danger" className="mb-3">
+            <Alert.Heading>Error</Alert.Heading>
+            <p>{props.error}</p>
+          </Alert>
+        )}
+
+        {/* Loading Indicator */}
+        {props.isLoading && (
+          <div className="d-flex justify-content-center mb-3">
+            <div className="spinner-border text-primary" role="status">
+              <span className="visually-hidden">Loading...</span>
+            </div>
+          </div>
+        )}
       </Container>
     </Navbar>
   );

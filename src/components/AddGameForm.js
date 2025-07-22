@@ -158,7 +158,14 @@ export const AddGameForm = observer(({ store }) => {
 
   return (
     <Container>
-      <Header viewName="addGame" />
+      <Header
+        viewName="addGame"
+        gameCount={store.gamesCount}
+        playerCount={store.playerCount}
+        hasError={store.hasError}
+        error={store.error}
+        isLoading={store.isLoading}
+      />
       <div className="App">
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h2>Add New Game</h2>

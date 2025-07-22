@@ -301,7 +301,14 @@ export const AddScoreForm = observer(
 
     return (
       <Container>
-        <Header viewName="addScore" />
+        <Header
+          viewName="addScore"
+          gameCount={store.gamesCount}
+          playerCount={store.playerCount}
+          hasError={store.hasError}
+          error={store.error}
+          isLoading={store.isLoading}
+        />
         <div className="App">
           <div>
             <div className="d-flex justify-content-between align-items-center mb-4">

@@ -3,10 +3,10 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import App from "./App.js";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { AddGameForm } from "./components/AddGameForm.js";
 import { AddScoreForm } from "./components/AddScoreForm.js";
+import { GameList } from "./components/GameList.js";
 import { GameStore } from "./stores/GameStore.js";
 import { MemoryStorageService } from "./services/MemoryStorageService.js";
 
@@ -27,7 +27,7 @@ const gameStore = new GameStore(storageService);
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <App store={gameStore} />,
+    element: <GameList store={gameStore} />,
   },
   {
     path: "/addGame",
