@@ -160,7 +160,7 @@ export const AddGameForm = observer(({ store }) => {
     <Container>
       <Header
         viewName="addGame"
-        gameCount={store.gamesCount}
+        gameCount={store.gameCount}
         playerCount={store.playerCount}
         hasError={store.hasError}
         error={store.error}

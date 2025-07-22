@@ -7,6 +7,7 @@
  */
 
 import React from "react";
+import { observer } from "mobx-react-lite";
 import {
   Row,
   Col,
@@ -34,7 +35,7 @@ import Header from "./Header.js";
  * @param {GameListProps} props - Component props
  * @returns {JSX.Element} The rendered GameList component
  */
-export const GameList = ({ store }) => {
+export const GameList = observer(({ store }) => {
   const games = store.games;
 
   /**
@@ -77,6 +78,20 @@ export const GameList = ({ store }) => {
   /**
    * Handle delete game with confirmation
    * @param {string} gameId - ID of game to delete
+   */
+  const handleGameSelect = (gameId) => {
+    if (
+      window.confirm(
+        `Are you sure you want to delete "${gameName}"? This action cannot be undone.`,
+      )
+    ) {
+      console.log("Game selected: " + gameId);
+    }
+  };
+
+  /**
+   * Handle delete game with confirmation
+   * @param {string} gameId - ID of game to delete
    * @param {string} gameName - Name of game for confirmation
    */
   const handleDeleteGame = (gameId, gameName) => {
@@ -85,7 +100,7 @@ export const GameList = ({ store }) => {
         `Are you sure you want to delete "${gameName}"? This action cannot be undone.`,
       )
     ) {
-      onDeleteGame(gameId);
+      console.log("Game deleted: " + gameId);
     }
   };
 
@@ -167,7 +182,7 @@ export const GameList = ({ store }) => {
                       <div className="d-grid gap-2">
                         <Button
                           variant="primary"
-                          onClick={() => onGameSelect(game.id)}
+                          onClick={() => handleGameSelect(game.id)}
                         >
                           View Details
                         </Button>
@@ -194,7 +209,7 @@ export const GameList = ({ store }) => {
     <div className="App">
       <Header
         viewName="home"
-        gameCount={store.gamesCount}
+        gameCount={store.gameCount}
         playerCount={store.playerCount}
         hasError={store.hasError}
         error={store.error}
@@ -205,4 +220,4 @@ export const GameList = ({ store }) => {
       <Container>{coreComponent}</Container>
     </div>
   );
-};
+});
